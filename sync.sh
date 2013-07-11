@@ -9,7 +9,7 @@ DIST_DIR_BASE=${DIST_DIR_BASE:="$SCRIPT_DIR/dist"}
 
 git submodule update --init opus
 cd opus
-git checkout ${OPUS_VER}
+git checkout master
 git pull 
 cd ..
 

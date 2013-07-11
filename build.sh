@@ -83,7 +83,7 @@ do
 	export CFLAGS
 	export LDFLAGS
 	
-    export CXXCPP="$PLATFORM/Developer/usr/bin/llvm-cpp"
+    export CXXCPP="$PLATFORM/Developer/usr/bin/llvm-cpp-4.2"
     export CPP="$CXXCPP"
     export CXX="$PLATFORM/Developer/usr/bin/llvm-g++"
     export CC="$PLATFORM/Developer/usr/bin/llvm-gcc"
@@ -101,6 +101,7 @@ do
 		--enable-static=yes \
 		--enable-shared=no \
 	    --disable-doc \
+		--disable-rtcd \
 		${EXTRA_FLAGS}
 
     echo "Installing opus for $ARCH..."
