@@ -68,9 +68,9 @@ do
 
     echo "Configuring opus for $ARCH..."
 	
-	./autogen.sh
+    ./autogen.sh
 	
-	CFLAGS="-g -O2 -pipe -arch ${ARCH} \
+    CFLAGS="-g -O2 -pipe -arch ${ARCH} \
 		-isysroot ${PLATFORM}/Developer/SDKs/${IOSSDK}.sdk \
 		-I${PLATFORM}/Developer/SDKs/${IOSSDK}.sdk/usr/include \
 		${EXTRA_CFLAGS}"
@@ -79,8 +79,8 @@ do
 		-L${PLATFORM}/Developer/SDKs/${IOSSDK}.sdk/usr/lib \
                 ${EXTRA_LDFLAGS}"
 	
-	export CFLAGS
-	export LDFLAGS
+    export CFLAGS
+    export LDFLAGS
 	
     export TOOLCHAIN_BASE=$(xcode-select -print-path)"/Toolchains/XcodeDefault.xctoolchain"
     export PROGRAMS="$TOOLCHAIN_BASE/usr/bin"
