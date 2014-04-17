@@ -88,9 +88,9 @@ do
     export CPP="$CXXCPP"
     export CXX="$PROGRAMS/c++"
     export CC="$PROGRAMS/cc"
+    export CCAS="$CC"
     export LD="$PROGRAMS/ld"
     export AR="$PROGRAMS/ar"
-    export AS="$PROGRAMS/as"
     export NM="$PROGRAMS/nm"
     export RANLIB="$PROGRAMS/ranlib"
     export STRIP="$PROGRAMS/strip"
@@ -101,6 +101,7 @@ do
 		--with-sysroot=${PLATFORM}/Developer/SDKs/${IOSSDK}.sdk \
 		--enable-static=yes \
 		--enable-shared=no \
+                --enable-fixed-point \
 	    --disable-extra-programs \
 	    --disable-doc \
 		${EXTRA_FLAGS}
