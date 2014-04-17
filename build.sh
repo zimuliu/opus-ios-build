@@ -42,13 +42,13 @@ do
 
     case $ARCH in
         armv7)
-            EXTRA_FLAGS="--with-pic"
+            EXTRA_FLAGS="--with-pic --enable-fixed-point"
             EXTRA_CFLAGS="-mcpu=cortex-a8 -mfpu=neon -miphoneos-version-min=${DEPLOYMENT_TARGET}"
             PLATFORM="${PLATFORMBASE}/iPhoneOS.platform"
             IOSSDK=iPhoneOS${IOSSDK_VER}
             ;;
         armv7s)
-            EXTRA_FLAGS="--with-pic"
+            EXTRA_FLAGS="--with-pic --enable-fixed-point"
             EXTRA_CFLAGS="-mcpu=cortex-a9 -mfpu=neon -miphoneos-version-min=${DEPLOYMENT_TARGET}"
             PLATFORM="${PLATFORMBASE}/iPhoneOS.platform"
             IOSSDK=iPhoneOS${IOSSDK_VER}
@@ -101,7 +101,6 @@ do
 		--with-sysroot=${PLATFORM}/Developer/SDKs/${IOSSDK}.sdk \
 		--enable-static=yes \
 		--enable-shared=no \
-                --enable-fixed-point \
 	    --disable-extra-programs \
 	    --disable-doc \
 		${EXTRA_FLAGS}
