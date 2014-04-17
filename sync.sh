@@ -7,12 +7,6 @@ source config.sh
 SCRIPT_DIR=$( (cd -P $(dirname $0) && pwd) )
 DIST_DIR_BASE=${DIST_DIR_BASE:="$SCRIPT_DIR/dist"}
 
-git submodule update --init opus
-cd opus
-git checkout ${OPUS_VER}
-git pull 
-cd ..
-
 for ARCH in $ARCHS
 do
     OPUS_DIR=opus-$ARCH
