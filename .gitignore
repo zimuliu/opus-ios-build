@@ -1,2 +1,2 @@
-opus-*
-dist-*
+/build/
+/dist/

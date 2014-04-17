@@ -4,9 +4,12 @@ set -e
 
 source config.sh
 
+SCRIPT_DIR=$( (cd -P $(dirname $0) && pwd) )
+DIST_DIR_BASE=${DIST_DIR_BASE:="$SCRIPT_DIR/dist"}
+
 for ARCH in $ARCHS
 do
-  if [ -d dist-$ARCH ]
+  if [ -d $DIST_DIR_BASE/$ARCH ]
   then
     MAIN_ARCH=$ARCH
   fi
@@ -19,20 +22,20 @@ then
 fi
 
 
-OUTPUT_DIR="dist-uarch"
+OUTPUT_DIR="dist/all"
 rm -rf $OUTPUT_DIR
 
 mkdir -p $OUTPUT_DIR/lib $OUTPUT_DIR/include
 
-for LIB in dist-$MAIN_ARCH/lib/*.a
+for LIB in $DIST_DIR_BASE/*/lib/*.a
 do
   LIB=`basename $LIB`
   LIPO_CREATE=""
   for ARCH in $ARCHS
   do
-    if [ -d dist-$ARCH ]
+    if [ -d $DIST_DIR_BASE/$ARCH ]
     then
-      LIPO_CREATE="$LIPO_CREATE-arch $ARCH dist-$ARCH/lib/$LIB "
+      LIPO_CREATE="$LIPO_CREATE-arch $ARCH $DIST_DIR_BASE/$ARCH/lib/$LIB "
     fi
   done
   OUTPUT="$OUTPUT_DIR/lib/$LIB"
@@ -41,5 +44,5 @@ do
   xcrun -sdk iphoneos lipo -info $OUTPUT
 done
 
-echo "Copying headers from dist-$MAIN_ARCH..."
-cp -R dist-$MAIN_ARCH/include/* $OUTPUT_DIR/include
+echo "Copying headers from $DIST_DIR_BASE/$MAIN_ARCH..."
+cp -R $DIST_DIR_BASE/$MAIN_ARCH/include/* $OUTPUT_DIR/include
