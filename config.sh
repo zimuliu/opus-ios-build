@@ -1,9 +1,8 @@
 #!/bin/bash
 
-OPUS_DIR="1.0.x"
 IOSSDK_VER=7.0
 ARCHS="armv7 armv7s i386"
-# ARCHS="armv7"
+DEPLOYMENT_TARGET=7.0
 
 remove_arch() {
 	OLD_ARCHS="$ARCHS"

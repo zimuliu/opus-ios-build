@@ -24,41 +24,39 @@ fi
 
 for ARCH in $ARCHS
 do
-    OPUS_DIR=opus-$ARCH
-    if [ ! -d $OPUS_DIR ]
+    BUILD_DIR=build/$ARCH
+    mkdir -p $BUILD_DIR
+    echo "Syncing source for $ARCH to directory $BUILD_DIR"
+    rsync opus/ $BUILD_DIR/ --exclude '.*' -a --delete
+    if [ ! -d $BUILD_DIR ]
     then
-      echo "Directory $OPUS_DIR does not exist, run sync.sh"
+      echo "Directory $BUILD_DIR does not exist"
       exit 1
     fi
-    echo "Compiling source for $ARCH in directory $OPUS_DIR"
+    echo "Compiling source for $ARCH in directory $BUILD_DIR"
 
-    cd $OPUS_DIR
+    cd $BUILD_DIR
 
-    DIST_DIR=$DIST_DIR_BASE-$ARCH
+    DIST_DIR=$DIST_DIR_BASE/$ARCH
     mkdir -p $DIST_DIR
 
     case $ARCH in
-        armv6)
-            EXTRA_FLAGS="--with-pic=no"
-            EXTRA_CFLAGS="-mcpu=arm1176jzf-s"
-            PLATFORM="${PLATFORMBASE}/iPhoneOS.platform"
-            IOSSDK=iPhoneOS${IOSSDK_VER}
-            ;;
         armv7)
             EXTRA_FLAGS="--with-pic"
-            EXTRA_CFLAGS="-mcpu=cortex-a8 -mfpu=neon"
+            EXTRA_CFLAGS="-mcpu=cortex-a8 -mfpu=neon -miphoneos-version-min=${DEPLOYMENT_TARGET}"
             PLATFORM="${PLATFORMBASE}/iPhoneOS.platform"
             IOSSDK=iPhoneOS${IOSSDK_VER}
             ;;
         armv7s)
             EXTRA_FLAGS="--with-pic"
-            EXTRA_CFLAGS="-mcpu=cortex-a9 -mfpu=neon -miphoneos-version-min=6.0"
+            EXTRA_CFLAGS="-mcpu=cortex-a9 -mfpu=neon -miphoneos-version-min=${DEPLOYMENT_TARGET}"
             PLATFORM="${PLATFORMBASE}/iPhoneOS.platform"
             IOSSDK=iPhoneOS${IOSSDK_VER}
             ;;
         i386)
             EXTRA_FLAGS="--with-pic"
             EXTRA_CFLAGS=""
+            EXTRA_LDFLAGS="-mios-simulator-version-min=${DEPLOYMENT_TARGET}"
             PLATFORM="${PLATFORMBASE}/iPhoneSimulator.platform"
             IOSSDK=iPhoneSimulator${IOSSDK_VER}
             ;;
@@ -78,21 +76,24 @@ do
 		${EXTRA_CFLAGS}"
     LDFLAGS="-arch ${ARCH} \
 		-isysroot ${PLATFORM}/Developer/SDKs/${IOSSDK}.sdk \
-		-L${PLATFORM}/Developer/SDKs/${IOSSDK}.sdk/usr/lib"
+		-L${PLATFORM}/Developer/SDKs/${IOSSDK}.sdk/usr/lib \
+                ${EXTRA_LDFLAGS}"
 	
 	export CFLAGS
 	export LDFLAGS
 	
-    export CXXCPP="$PLATFORM/Developer/usr/bin/llvm-cpp"
+    export TOOLCHAIN_BASE=$(xcode-select -print-path)"/Toolchains/XcodeDefault.xctoolchain"
+    export PROGRAMS="$TOOLCHAIN_BASE/usr/bin"
+    export CXXCPP="$PROGRAMS/cpp"
     export CPP="$CXXCPP"
-    export CXX="$PLATFORM/Developer/usr/bin/llvm-g++"
-    export CC="$PLATFORM/Developer/usr/bin/llvm-gcc"
-    export LD="$PLATFORM/Developer/usr/bin/ld"
-    export AR="$PLATFORM/Developer/usr/bin/ar"
-    export AS="$PLATFORM/Developer/usr/bin/ls"
-    export NM="$PLATFORM/Developer/usr/bin/nm"
-    export RANLIB="$PLATFORM/Developer/usr/bin/ranlib"
-    export STRIP="$PLATFORM/Developer/usr/bin/strip"
+    export CXX="$PROGRAMS/c++"
+    export CC="$PROGRAMS/cc"
+    export LD="$PROGRAMS/ld"
+    export AR="$PROGRAMS/ar"
+    export AS="$PROGRAMS/as"
+    export NM="$PROGRAMS/nm"
+    export RANLIB="$PROGRAMS/ranlib"
+    export STRIP="$PROGRAMS/strip"
 	
     ./configure \
     	--prefix=$DIST_DIR \
@@ -100,6 +101,7 @@ do
 		--with-sysroot=${PLATFORM}/Developer/SDKs/${IOSSDK}.sdk \
 		--enable-static=yes \
 		--enable-shared=no \
+	    --disable-extra-programs \
 	    --disable-doc \
 		${EXTRA_FLAGS}
 
