@@ -4,7 +4,7 @@ Build opus codec for iOS
 
 ## USAGE
 
-Run ./sync.sh, ./build.sh and ./combine.sh as appropriate. It is probably
+Run ./build.sh and ./combine.sh as appropriate. It is probably
 needed to change some variables in ./config.sh.
 
 To find out which SDKs are supported run:
